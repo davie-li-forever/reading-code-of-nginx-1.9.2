@@ -1,4 +1,4 @@
-http://blog.csdn.net/kenanxiuji/article/details/52490749   һ����װnghttp2.0
+http://blog.csdn.net/kenanxiuji/article/details/52490749   Ò»¼ü°²×°nghttp2.0
 
 export LD_LIBRARY_PATH=/usr/local/lib:/lib:/lib64
 export PKG_CONFIG=`which pkg-config`

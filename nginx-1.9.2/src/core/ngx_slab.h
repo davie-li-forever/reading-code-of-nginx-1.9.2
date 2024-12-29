@@ -14,76 +14,76 @@
 
 
 typedef struct ngx_slab_page_s  ngx_slab_page_t;
-//Í¼ĞÎ»¯Àí½â²Î¿¼:http://blog.csdn.net/u013009575/article/details/17743261
-struct ngx_slab_page_s { //³õÊ¼»¯¸³ÖµÔÚngx_slab_init
-    //¶àÖÖÇé¿ö£¬¶à¸öÓÃÍ¾  
-    //µ±ĞèÒª·ÖÅäĞÂµÄÒ³µÄÊ±ºò£¬·ÖÅäN¸öÒ³ngx_slab_page_s½á¹¹ÖĞµÚÒ»¸öÒ³µÄslab±íÊ¾Õâ´ÎÒ»¹²·ÖÅäÁË¶àÉÙ¸öÒ³ //±ê¼ÇÕâÊÇÁ¬Ğø·ÖÅä¶à¸öpage£¬²¢ÇÒÎÒ²»ÊÇÊ×page£¬ÀıÈçÒ»´Î·ÖÅä3¸öpage,·ÖÅäµÄpageÎª[1-3]£¬Ôòpage[1].slab=3  page[2].slab=page[3].slab=NGX_SLAB_PAGE_BUSY¼ÇÂ¼
-    //Èç¹ûOBJ<128Ò»¸öÒ³ÖĞ´æ·ÅµÄÊÇ¶à¸öobj(ÀıÈç128¸ö32×Ö½Úobj),Ôòslab¼ÇÂ¼ÀïÃæµÄobjµÄ´óĞ¡£¬¼ûngx_slab_alloc_locked
-    //Èç¹ûobjÒÆÎ»´óĞ¡Îªngx_slab_exact_shift£¬Ò²¾ÍÊÇobj128×Ö½Ú£¬page->slab = 1;page->slab´æ´¢objµÄbitmap,ÀıÈçÕâÀïÎª1£¬±íÊ¾ËµµÚÒ»¸öobj·ÖÅä³öÈ¥ÁË   ¼ûngx_slab_alloc_locked
-    //Èç¹ûobjÒÆÎ»´óĞ¡Îªngx_slab_exact_shift£¬Ò²¾ÍÊÇobj>128×Ö½Ú£¬page->slab = ((uintptr_t) 1 << NGX_SLAB_MAP_SHIFT) | shift;//´óÓÚ128£¬Ò²¾ÍÊÇÖÁÉÙ256£,4K×î¶àÒ²¾Í16¸ö256£¬Òò´ËÖ»ĞèÒªslabµÄ¸ß16Î»±íÊ¾objÎ»Í¼¼´¿É
-    //µ±·ÖÅäÄ³Ğ©´óĞ¡µÄobjµÄÊ±ºò(Ò»¸ö»º´æÒ³´æ·Å¶à¸öobj)£¬slab±íÊ¾±»·ÖÅäµÄ»º´æµÄÕ¼ÓÃÇé¿ö(ÊÇ·ñ¿ÕÏĞ)£¬ÒÔbitÎ»À´±íÊ¾
-    //Èç¹û
-    uintptr_t         slab; //ngx_slab_initÖĞ³õÊ¼¸³ÖµÎª¹²ÏíÄÚ´æÖĞÊ£ÓàÒ³µÄ¸öÊı
-    //ÔÚngx_slab_initÖĞ³õÊ¼»¯µÄ9¸öngx_slab_page_sÍ¨¹ınextÁ¬½ÓÔÚÒ»Æğ
-    //Èç¹ûÒ³ÖĞµÄojb<128 = 128 »òÕß>128 ,ÔònextÖ±½ÓÖ¸Ïò¶ÔÓ¦µÄÒ³slots[slot].next = page; Í¬Ê±pages_m[]Ö¸Ïòpage->next = &slots[slot];
-    ngx_slab_page_t  *next; //ÔÚ·ÖÅä½ÏĞ¡objµÄÊ±ºò£¬nextÖ¸Ïòslab pageÔÚpool->pagesµÄÎ»ÖÃ    //ÏÂÒ»¸öpageÒ³  
-    //ÓÉÓÚÖ¸ÕëÊÇ4µÄ±¶Êı,ÄÇÃ´ºóÁ½Î»Ò»¶¨Îª0,´ËÊ±ÎÒÃÇ¿ÉÒÔÀûÓÃÖ¸ÕëµÄºóÁ½Î»×ö±ê¼Ç,³ä·ÖÀûÓÃ¿Õ¼ä. ÓÃµÍÁ½Î»¼ÇÂ¼NGX_SLAB_PAGEµÈ±ê¼Ç
-    //Èç¹ûÒ³ÖĞµÄobj<128,±ê¼Ç¸ÃÒ³ÖĞ´æ´¢µÄÊÇĞ¡Óë128µÄobj page->prev = (uintptr_t) &slots[slot] | NGX_SLAB_SMALL 
+//ÃÂ¼ÄÃÂ»Â¯Ã€Ã­Â½Ã¢Â²ÃÂ¿Â¼:http://blog.csdn.net/u013009575/article/details/17743261
+struct ngx_slab_page_s { //Â³ÃµÃŠÂ¼Â»Â¯Â¸Â³Ã–ÂµÃ”Ãšngx_slab_init
+    //Â¶Ã Ã–Ã–Ã‡Ã©Â¿Ã¶Â£Â¬Â¶Ã Â¸Ã¶Ã“ÃƒÃÂ¾  
+    //ÂµÂ±ÄÃ¨Ã’ÂªÂ·Ã–Ã…Ã¤ÄÃ‚ÂµÃ„Ã’Â³ÂµÃ„ÃŠÂ±ÂºÃ²Â£Â¬Â·Ã–Ã…Ã¤NÂ¸Ã¶Ã’Â³ngx_slab_page_sÂ½Ã¡Â¹Â¹Ã–ÄÂµÃšÃ’Â»Â¸Ã¶Ã’Â³ÂµÃ„slabÂ±Ã­ÃŠÂ¾Ã•Ã¢Â´ÃÃ’Â»Â¹Â²Â·Ã–Ã…Ã¤ÃÃ‹Â¶Ã Ã‰Ã™Â¸Ã¶Ã’Â³ //Â±ÃªÂ¼Ã‡Ã•Ã¢ÃŠÃ‡ÃÂ¬ÄÃ¸Â·Ã–Ã…Ã¤Â¶Ã Â¸Ã¶pageÂ£Â¬Â²Â¢Ã‡Ã’ÃÃ’Â²Â»ÃŠÃ‡ÃŠÃ—pageÂ£Â¬Ã€Ä±ÃˆÃ§Ã’Â»Â´ÃÂ·Ã–Ã…Ã¤3Â¸Ã¶page,Â·Ã–Ã…Ã¤ÂµÃ„pageÃÂª[1-3]Â£Â¬Ã”Ã²page[1].slab=3  page[2].slab=page[3].slab=NGX_SLAB_PAGE_BUSYÂ¼Ã‡Ã‚Â¼
+    //ÃˆÃ§Â¹Ã»OBJ<128Ã’Â»Â¸Ã¶Ã’Â³Ã–ÄÂ´Ã¦Â·Ã…ÂµÃ„ÃŠÃ‡Â¶Ã Â¸Ã¶obj(Ã€Ä±ÃˆÃ§128Â¸Ã¶32Ã—Ã–Â½Ãšobj),Ã”Ã²slabÂ¼Ã‡Ã‚Â¼Ã€Ã¯ÃƒÃ¦ÂµÃ„objÂµÃ„Â´Ã³ÄÂ¡Â£Â¬Â¼Ã»ngx_slab_alloc_locked
+    //ÃˆÃ§Â¹Ã»objÃ’Ã†ÃÂ»Â´Ã³ÄÂ¡ÃÂªngx_slab_exact_shiftÂ£Â¬Ã’Â²Â¾ÃÃŠÃ‡obj128Ã—Ã–Â½ÃšÂ£Â¬page->slab = 1;page->slabÂ´Ã¦Â´Â¢objÂµÃ„bitmap,Ã€Ä±ÃˆÃ§Ã•Ã¢Ã€Ã¯ÃÂª1Â£Â¬Â±Ã­ÃŠÂ¾Ã‹ÂµÂµÃšÃ’Â»Â¸Ã¶objÂ·Ã–Ã…Ã¤Â³Ã¶ÃˆÂ¥ÃÃ‹   Â¼Ã»ngx_slab_alloc_locked
+    //ÃˆÃ§Â¹Ã»objÃ’Ã†ÃÂ»Â´Ã³ÄÂ¡ÃÂªngx_slab_exact_shiftÂ£Â¬Ã’Â²Â¾ÃÃŠÃ‡obj>128Ã—Ã–Â½ÃšÂ£Â¬page->slab = ((uintptr_t) 1 << NGX_SLAB_MAP_SHIFT) | shift;//Â´Ã³Ã“Ãš128Â£Â¬Ã’Â²Â¾ÃÃŠÃ‡Ã–ÃÃ‰Ã™256Â£,4KÃ—Ã®Â¶Ã Ã’Â²Â¾Ã16Â¸Ã¶256Â£Â¬Ã’Ã²Â´Ã‹Ã–Â»ÄÃ¨Ã’ÂªslabÂµÃ„Â¸ÃŸ16ÃÂ»Â±Ã­ÃŠÂ¾objÃÂ»ÃÂ¼Â¼Â´Â¿Ã‰
+    //ÂµÂ±Â·Ã–Ã…Ã¤Ã„Â³ÄÂ©Â´Ã³ÄÂ¡ÂµÃ„objÂµÃ„ÃŠÂ±ÂºÃ²(Ã’Â»Â¸Ã¶Â»ÂºÂ´Ã¦Ã’Â³Â´Ã¦Â·Ã…Â¶Ã Â¸Ã¶obj)Â£Â¬slabÂ±Ã­ÃŠÂ¾Â±Â»Â·Ã–Ã…Ã¤ÂµÃ„Â»ÂºÂ´Ã¦ÂµÃ„Ã•Â¼Ã“ÃƒÃ‡Ã©Â¿Ã¶(ÃŠÃ‡Â·Ã±Â¿Ã•ÃÄ)Â£Â¬Ã’Ã”bitÃÂ»Ã€Â´Â±Ã­ÃŠÂ¾
+    //ÃˆÃ§Â¹Ã»
+    uintptr_t         slab; //ngx_slab_initÃ–ÄÂ³ÃµÃŠÂ¼Â¸Â³Ã–ÂµÃÂªÂ¹Â²ÃÃ­Ã„ÃšÂ´Ã¦Ã–ÄÃŠÂ£Ã“Ã Ã’Â³ÂµÃ„Â¸Ã¶ÃŠÄ±
+    //Ã”Ãšngx_slab_initÃ–ÄÂ³ÃµÃŠÂ¼Â»Â¯ÂµÃ„9Â¸Ã¶ngx_slab_page_sÃÂ¨Â¹Ä±nextÃÂ¬Â½Ã“Ã”ÃšÃ’Â»Ã†ÄŸ
+    //ÃˆÃ§Â¹Ã»Ã’Â³Ã–ÄÂµÃ„ojb<128 = 128 Â»Ã²Ã•ÃŸ>128 ,Ã”Ã²nextÃ–Â±Â½Ã“Ã–Â¸ÃÃ²Â¶Ã”Ã“Â¦ÂµÃ„Ã’Â³slots[slot].next = page; ÃÂ¬ÃŠÂ±pages_m[]Ã–Â¸ÃÃ²page->next = &slots[slot];
+    ngx_slab_page_t  *next; //Ã”ÃšÂ·Ã–Ã…Ã¤Â½ÃÄÂ¡objÂµÃ„ÃŠÂ±ÂºÃ²Â£Â¬nextÃ–Â¸ÃÃ²slab pageÃ”Ãšpool->pagesÂµÃ„ÃÂ»Ã–Ãƒ    //ÃÃ‚Ã’Â»Â¸Ã¶pageÃ’Â³  
+    //Ã“Ã‰Ã“ÃšÃ–Â¸Ã•Ã«ÃŠÃ‡4ÂµÃ„Â±Â¶ÃŠÄ±,Ã„Ã‡ÃƒÂ´ÂºÃ³ÃÂ½ÃÂ»Ã’Â»Â¶Â¨ÃÂª0,Â´Ã‹ÃŠÂ±ÃÃ’ÃƒÃ‡Â¿Ã‰Ã’Ã”Ã€Ã»Ã“ÃƒÃ–Â¸Ã•Ã«ÂµÃ„ÂºÃ³ÃÂ½ÃÂ»Ã—Ã¶Â±ÃªÂ¼Ã‡,Â³Ã¤Â·Ã–Ã€Ã»Ã“ÃƒÂ¿Ã•Â¼Ã¤. Ã“ÃƒÂµÃÃÂ½ÃÂ»Â¼Ã‡Ã‚Â¼NGX_SLAB_PAGEÂµÃˆÂ±ÃªÂ¼Ã‡
+    //ÃˆÃ§Â¹Ã»Ã’Â³Ã–ÄÂµÃ„obj<128,Â±ÃªÂ¼Ã‡Â¸ÃƒÃ’Â³Ã–ÄÂ´Ã¦Â´Â¢ÂµÃ„ÃŠÃ‡ÄÂ¡Ã“Ã«128ÂµÃ„obj page->prev = (uintptr_t) &slots[slot] | NGX_SLAB_SMALL 
     //obj=128 page->prev = (uintptr_t) &slots[slot] | NGX_SLAB_EXACT; 
-    uintptr_t         prev;//ÉÏÒ»¸öpageÒ³  
+    uintptr_t         prev;//Ã‰ÃÃ’Â»Â¸Ã¶pageÃ’Â³  
 };
 /*
-¹²ÏíÄÚ´æµÄÆäÊµµØÖ·¿ªÊ¼´¦Êı¾İ:ngx_slab_pool_t + 9 * sizeof(ngx_slab_page_t)(slots_m[]) + pages * sizeof(ngx_slab_page_t)(pages_m[]) +pages*ngx_pagesize(ÕâÊÇÊµ¼ÊµÄÊı¾İ²¿·Ö£¬
-Ã¿¸öngx_pagesize¶¼ÓÉÇ°ÃæµÄÒ»¸öngx_slab_page_t½øĞĞ¹ÜÀí£¬²¢ÇÒÃ¿¸öngx_pagesize×îÇ°¶ËµÚÒ»¸öobj´æ·ÅµÄÊÇÒ»¸ö»òÕß¶à¸öintÀàĞÍbitmap£¬ÓÃÓÚ¹ÜÀíÃ¿¿é·ÖÅä³öÈ¥µÄÄÚ´æ)
+Â¹Â²ÃÃ­Ã„ÃšÂ´Ã¦ÂµÃ„Ã†Ã¤ÃŠÂµÂµÃ˜Ã–Â·Â¿ÂªÃŠÂ¼Â´Â¦ÃŠÄ±Â¾Ä°:ngx_slab_pool_t + 9 * sizeof(ngx_slab_page_t)(slots_m[]) + pages * sizeof(ngx_slab_page_t)(pages_m[]) +pages*ngx_pagesize(Ã•Ã¢ÃŠÃ‡ÃŠÂµÂ¼ÃŠÂµÃ„ÃŠÄ±Â¾Ä°Â²Â¿Â·Ã–Â£Â¬
+ÃƒÂ¿Â¸Ã¶ngx_pagesizeÂ¶Â¼Ã“Ã‰Ã‡Â°ÃƒÃ¦ÂµÃ„Ã’Â»Â¸Ã¶ngx_slab_page_tÂ½Ã¸ÄÄÂ¹ÃœÃ€Ã­Â£Â¬Â²Â¢Ã‡Ã’ÃƒÂ¿Â¸Ã¶ngx_pagesizeÃ—Ã®Ã‡Â°Â¶Ã‹ÂµÃšÃ’Â»Â¸Ã¶objÂ´Ã¦Â·Ã…ÂµÃ„ÃŠÃ‡Ã’Â»Â¸Ã¶Â»Ã²Ã•ÃŸÂ¶Ã Â¸Ã¶intÃ€Ã ÄÃbitmapÂ£Â¬Ã“ÃƒÃ“ÃšÂ¹ÃœÃ€Ã­ÃƒÂ¿Â¿Ã©Â·Ã–Ã…Ã¤Â³Ã¶ÃˆÂ¥ÂµÃ„Ã„ÃšÂ´Ã¦)
 
-m_slot[0]:Á´½ÓpageÒ³Ãæ,²¢ÇÒpageÒ³Ãæ»®·ÖµÄslot¿é´óĞ¡Îª2^3
-m_slot[1]:Á´½ÓpageÒ³Ãæ,²¢ÇÒpageÒ³Ãæ»®·ÖµÄslot¿é´óĞ¡Îª2^4
-m_slot[2]:Á´½ÓpageÒ³Ãæ,²¢ÇÒpageÒ³Ãæ»®·ÖµÄslot¿é´óĞ¡Îª2^5
-¡­¡­¡­¡­¡­¡­.
-m_slot[8]:Á´½ÓpageÒ³Ãæ,²¢ÇÒpageÒ³Ãæ»®·ÖµÄslot¿é´óĞ¡Îª2k(2048)
+m_slot[0]:ÃÂ´Â½Ã“pageÃ’Â³ÃƒÃ¦,Â²Â¢Ã‡Ã’pageÃ’Â³ÃƒÃ¦Â»Â®Â·Ã–ÂµÃ„slotÂ¿Ã©Â´Ã³ÄÂ¡ÃÂª2^3
+m_slot[1]:ÃÂ´Â½Ã“pageÃ’Â³ÃƒÃ¦,Â²Â¢Ã‡Ã’pageÃ’Â³ÃƒÃ¦Â»Â®Â·Ã–ÂµÃ„slotÂ¿Ã©Â´Ã³ÄÂ¡ÃÂª2^4
+m_slot[2]:ÃÂ´Â½Ã“pageÃ’Â³ÃƒÃ¦,Â²Â¢Ã‡Ã’pageÃ’Â³ÃƒÃ¦Â»Â®Â·Ã–ÂµÃ„slotÂ¿Ã©Â´Ã³ÄÂ¡ÃÂª2^5
+Â¡Â­Â¡Â­Â¡Â­Â¡Â­Â¡Â­Â¡Â­.
+m_slot[8]:ÃÂ´Â½Ã“pageÃ’Â³ÃƒÃ¦,Â²Â¢Ã‡Ã’pageÃ’Â³ÃƒÃ¦Â»Â®Â·Ã–ÂµÃ„slotÂ¿Ã©Â´Ã³ÄÂ¡ÃÂª2k(2048)
 
-m_pageÊı×é:Êı×éÖĞÃ¿¸öÔªËØ¶ÔÓ¦Ò»¸öpageÒ³.
-m_page[0]¶ÔÓ¦page[0]Ò³Ãæ
-m_page[1]¶ÔÓ¦page[1]Ò³Ãæ
-m_page[2]¶ÔÓ¦page[2]Ò³Ãæ
-¡­¡­¡­¡­¡­¡­¡­¡­¡­¡­.
-m_page[k]¶ÔÓ¦page[k]Ò³Ãæ
-ÁíÍâ¿ÉÄÜÓĞµÄm_page[]Ã»ÓĞÏàÓ¦Ò³ÃæÓëËûÏà¶ÔÓ¦.
+m_pageÃŠÄ±Ã—Ã©:ÃŠÄ±Ã—Ã©Ã–ÄÃƒÂ¿Â¸Ã¶Ã”ÂªÃ‹Ã˜Â¶Ã”Ã“Â¦Ã’Â»Â¸Ã¶pageÃ’Â³.
+m_page[0]Â¶Ã”Ã“Â¦page[0]Ã’Â³ÃƒÃ¦
+m_page[1]Â¶Ã”Ã“Â¦page[1]Ã’Â³ÃƒÃ¦
+m_page[2]Â¶Ã”Ã“Â¦page[2]Ã’Â³ÃƒÃ¦
+Â¡Â­Â¡Â­Â¡Â­Â¡Â­Â¡Â­Â¡Â­Â¡Â­Â¡Â­Â¡Â­Â¡Â­.
+m_page[k]Â¶Ã”Ã“Â¦page[k]Ã’Â³ÃƒÃ¦
+ÃÃ­ÃÃ¢Â¿Ã‰Ã„ÃœÃ“ÄÂµÃ„m_page[]ÃƒÂ»Ã“ÄÃÃ Ã“Â¦Ã’Â³ÃƒÃ¦Ã“Ã«Ã‹Ã»ÃÃ Â¶Ã”Ã“Â¦.
 
 */
-//Í¼ĞÎ»¯Àí½â²Î¿¼:http://blog.csdn.net/u013009575/article/details/17743261
-typedef struct { //³õÊ¼»¯¸³ÖµÔÚngx_slab_init  slab½á¹¹ÊÇÅäºÏ¹²ÏíÄÚ´æÊ¹ÓÃµÄ  ¿ÉÒÔÒÔlimit reqÄ£¿éÎªÀı£¬²Î¿¼ngx_http_limit_req_module
-    ngx_shmtx_sh_t    lock; //mutexµÄËø  
+//ÃÂ¼ÄÃÂ»Â¯Ã€Ã­Â½Ã¢Â²ÃÂ¿Â¼:http://blog.csdn.net/u013009575/article/details/17743261
+typedef struct { //Â³ÃµÃŠÂ¼Â»Â¯Â¸Â³Ã–ÂµÃ”Ãšngx_slab_init  slabÂ½Ã¡Â¹Â¹ÃŠÃ‡Ã…Ã¤ÂºÃÂ¹Â²ÃÃ­Ã„ÃšÂ´Ã¦ÃŠÂ¹Ã“ÃƒÂµÃ„  Â¿Ã‰Ã’Ã”Ã’Ã”limit reqÃ„Â£Â¿Ã©ÃÂªÃ€Ä±Â£Â¬Â²ÃÂ¿Â¼ngx_http_limit_req_module
+    ngx_shmtx_sh_t    lock; //mutexÂµÃ„Ã‹Ã¸  
 
-    size_t            min_size; //ÄÚ´æ»º´æobj×îĞ¡µÄ´óĞ¡£¬Ò»°ãÊÇ1¸öbyte   //×îĞ¡·ÖÅäµÄ¿Õ¼äÊÇ8byte ¼ûngx_slab_init 
-    //slab poolÒÔshiftÀ´±È½ÏºÍ¼ÆËãËùĞè·ÖÅäµÄobj´óĞ¡¡¢Ã¿¸ö»º´æÒ³ÄÜ¹»ÈİÄÉobj¸öÊıÒÔ¼°Ëù·ÖÅäµÄÒ³ÔÚ»º´æ¿Õ¼äµÄÎ»ÖÃ  
-    size_t            min_shift; //ngx_init_zone_poolÖĞÄ¬ÈÏÎª3
+    size_t            min_size; //Ã„ÃšÂ´Ã¦Â»ÂºÂ´Ã¦objÃ—Ã®ÄÂ¡ÂµÃ„Â´Ã³ÄÂ¡Â£Â¬Ã’Â»Â°Ã£ÃŠÃ‡1Â¸Ã¶byte   //Ã—Ã®ÄÂ¡Â·Ã–Ã…Ã¤ÂµÃ„Â¿Ã•Â¼Ã¤ÃŠÃ‡8byte Â¼Ã»ngx_slab_init 
+    //slab poolÃ’Ã”shiftÃ€Â´Â±ÃˆÂ½ÃÂºÃÂ¼Ã†Ã‹Ã£Ã‹Ã¹ÄÃ¨Â·Ã–Ã…Ã¤ÂµÃ„objÂ´Ã³ÄÂ¡Â¡Â¢ÃƒÂ¿Â¸Ã¶Â»ÂºÂ´Ã¦Ã’Â³Ã„ÃœÂ¹Â»ÃˆÄ°Ã„Ã‰objÂ¸Ã¶ÃŠÄ±Ã’Ã”Â¼Â°Ã‹Ã¹Â·Ã–Ã…Ã¤ÂµÃ„Ã’Â³Ã”ÃšÂ»ÂºÂ´Ã¦Â¿Ã•Â¼Ã¤ÂµÃ„ÃÂ»Ã–Ãƒ  
+    size_t            min_shift; //ngx_init_zone_poolÃ–ÄÃ„Â¬ÃˆÃÃÂª3
 /*
-¹²ÏíÄÚ´æµÄÆäÊµµØÖ·¿ªÊ¼´¦Êı¾İ:ngx_slab_pool_t + 9 * sizeof(ngx_slab_page_t)(slots_m[]) + pages * sizeof(ngx_slab_page_t)(pages_m[]) +pages*ngx_pagesize(ÕâÊÇÊµ¼ÊµÄÊı¾İ²¿·Ö£¬
-Ã¿¸öngx_pagesize¶¼ÓÉÇ°ÃæµÄÒ»¸öngx_slab_page_t½øĞĞ¹ÜÀí£¬²¢ÇÒÃ¿¸öngx_pagesize×îÇ°¶ËµÚÒ»¸öobj´æ·ÅµÄÊÇÒ»¸ö»òÕß¶à¸öintÀàĞÍbitmap£¬ÓÃÓÚ¹ÜÀíÃ¿¿é·ÖÅä³öÈ¥µÄÄÚ´æ)
+Â¹Â²ÃÃ­Ã„ÃšÂ´Ã¦ÂµÃ„Ã†Ã¤ÃŠÂµÂµÃ˜Ã–Â·Â¿ÂªÃŠÂ¼Â´Â¦ÃŠÄ±Â¾Ä°:ngx_slab_pool_t + 9 * sizeof(ngx_slab_page_t)(slots_m[]) + pages * sizeof(ngx_slab_page_t)(pages_m[]) +pages*ngx_pagesize(Ã•Ã¢ÃŠÃ‡ÃŠÂµÂ¼ÃŠÂµÃ„ÃŠÄ±Â¾Ä°Â²Â¿Â·Ã–Â£Â¬
+ÃƒÂ¿Â¸Ã¶ngx_pagesizeÂ¶Â¼Ã“Ã‰Ã‡Â°ÃƒÃ¦ÂµÃ„Ã’Â»Â¸Ã¶ngx_slab_page_tÂ½Ã¸ÄÄÂ¹ÃœÃ€Ã­Â£Â¬Â²Â¢Ã‡Ã’ÃƒÂ¿Â¸Ã¶ngx_pagesizeÃ—Ã®Ã‡Â°Â¶Ã‹ÂµÃšÃ’Â»Â¸Ã¶objÂ´Ã¦Â·Ã…ÂµÃ„ÃŠÃ‡Ã’Â»Â¸Ã¶Â»Ã²Ã•ÃŸÂ¶Ã Â¸Ã¶intÃ€Ã ÄÃbitmapÂ£Â¬Ã“ÃƒÃ“ÃšÂ¹ÃœÃ€Ã­ÃƒÂ¿Â¿Ã©Â·Ã–Ã…Ã¤Â³Ã¶ÃˆÂ¥ÂµÃ„Ã„ÃšÂ´Ã¦)
 */
-    //Ö¸Ïòngx_slab_pool_t + 9 * sizeof(ngx_slab_page_t) + pages * sizeof(ngx_slab_page_t) +pages*ngx_pagesize(ÕâÊÇÊµ¼ÊµÄÊı¾İ²¿·Ö)ÖĞµÄpages * sizeof(ngx_slab_page_t)¿ªÍ·´¦
-    ngx_slab_page_t  *pages; //slab page¿Õ¼äµÄ¿ªÍ·   ³õÊ¼Ö¸Ïòpages * sizeof(ngx_slab_page_t)Ê×µØÖ·
-    ngx_slab_page_t  *last; // Ò²¾ÍÊÇÖ¸ÏòÊµ¼ÊµÄÊı¾İÒ³pages*ngx_pagesize£¬Ö¸Ïò×îºóÒ»¸öpagesÒ³
-    //¹ÜÀífreeµÄÒ³Ãæ   ÊÇÒ»¸öÁ´±íÍ·,ÓÃÓÚÁ¬½Ó¿ÕÏĞÒ³Ãæ.
-    ngx_slab_page_t   free; //³õÊ¼»¯¸³ÖµÔÚngx_slab_init  free->nextÖ¸Ïòpages * sizeof(ngx_slab_page_t)  ÏÂ´Î´Ófree.nextÊÇÏÂ´Î·ÖÅäÒ³Ê±ºòµÄÈë¿Ú¿ªÊ¼·ÖÅäÒ³¿Õ¼ä
+    //Ã–Â¸ÃÃ²ngx_slab_pool_t + 9 * sizeof(ngx_slab_page_t) + pages * sizeof(ngx_slab_page_t) +pages*ngx_pagesize(Ã•Ã¢ÃŠÃ‡ÃŠÂµÂ¼ÃŠÂµÃ„ÃŠÄ±Â¾Ä°Â²Â¿Â·Ã–)Ã–ÄÂµÃ„pages * sizeof(ngx_slab_page_t)Â¿ÂªÃÂ·Â´Â¦
+    ngx_slab_page_t  *pages; //slab pageÂ¿Ã•Â¼Ã¤ÂµÃ„Â¿ÂªÃÂ·   Â³ÃµÃŠÂ¼Ã–Â¸ÃÃ²pages * sizeof(ngx_slab_page_t)ÃŠÃ—ÂµÃ˜Ã–Â·
+    ngx_slab_page_t  *last; // Ã’Â²Â¾ÃÃŠÃ‡Ã–Â¸ÃÃ²ÃŠÂµÂ¼ÃŠÂµÃ„ÃŠÄ±Â¾Ä°Ã’Â³pages*ngx_pagesizeÂ£Â¬Ã–Â¸ÃÃ²Ã—Ã®ÂºÃ³Ã’Â»Â¸Ã¶pagesÃ’Â³
+    //Â¹ÃœÃ€Ã­freeÂµÃ„Ã’Â³ÃƒÃ¦   ÃŠÃ‡Ã’Â»Â¸Ã¶ÃÂ´Â±Ã­ÃÂ·,Ã“ÃƒÃ“ÃšÃÂ¬Â½Ã“Â¿Ã•ÃÄÃ’Â³ÃƒÃ¦.
+    ngx_slab_page_t   free; //Â³ÃµÃŠÂ¼Â»Â¯Â¸Â³Ã–ÂµÃ”Ãšngx_slab_init  free->nextÃ–Â¸ÃÃ²pages * sizeof(ngx_slab_page_t)  ÃÃ‚Â´ÃÂ´Ã“free.nextÃŠÃ‡ÃÃ‚Â´ÃÂ·Ã–Ã…Ã¤Ã’Â³ÃŠÂ±ÂºÃ²ÂµÃ„ÃˆÃ«Â¿ÃšÂ¿ÂªÃŠÂ¼Â·Ã–Ã…Ã¤Ã’Â³Â¿Ã•Â¼Ã¤
 
-    u_char           *start; //Êµ¼Ê»º´æobjµÄ¿Õ¼äµÄ¿ªÍ·   Õâ¸öÊÇ¶ÔµØÖ·¿Õ¼ä½øĞĞngx_pagesize¶ÔÆëºóµÄÆğÊ¼µØÖ·£¬¼ûngx_slab_init
+    u_char           *start; //ÃŠÂµÂ¼ÃŠÂ»ÂºÂ´Ã¦objÂµÃ„Â¿Ã•Â¼Ã¤ÂµÃ„Â¿ÂªÃÂ·   Ã•Ã¢Â¸Ã¶ÃŠÃ‡Â¶Ã”ÂµÃ˜Ã–Â·Â¿Ã•Â¼Ã¤Â½Ã¸ÄÄngx_pagesizeÂ¶Ã”Ã†Ã«ÂºÃ³ÂµÃ„Ã†ÄŸÃŠÂ¼ÂµÃ˜Ã–Â·Â£Â¬Â¼Ã»ngx_slab_init
     u_char           *end;
 
-    ngx_shmtx_t       mutex; //ngx_init_zone_pool->ngx_shmtx_create->sem_init½øĞĞ³õÊ¼»¯
+    ngx_shmtx_t       mutex; //ngx_init_zone_pool->ngx_shmtx_create->sem_initÂ½Ã¸ÄÄÂ³ÃµÃŠÂ¼Â»Â¯
 
     u_char           *log_ctx;//pool->log_ctx = &pool->zero;
     u_char            zero;
 
-    unsigned          log_nomem:1; //ngx_slab_initÖĞÄ¬ÈÏÎª1
+    unsigned          log_nomem:1; //ngx_slab_initÃ–ÄÃ„Â¬ÃˆÃÃÂª1
 
-    //ngx_http_file_cache_initÖĞcache->shpool->data = cache->sh;
-    void             *data; //Ö¸Ïòngx_http_file_cache_t->sh
-    void             *addr; //Ö¸Ïòngx_slab_pool_tµÄ¿ªÍ·    //Ö¸Ïò¹²ÏíÄÚ´ængx_shm_zone_tÖĞµÄaddr+sizeÎ²²¿µØÖ·
+    //ngx_http_file_cache_initÃ–Äcache->shpool->data = cache->sh;
+    void             *data; //Ã–Â¸ÃÃ²ngx_http_file_cache_t->sh
+    void             *addr; //Ã–Â¸ÃÃ²ngx_slab_pool_tÂµÃ„Â¿ÂªÃÂ·    //Ã–Â¸ÃÃ²Â¹Â²ÃÃ­Ã„ÃšÂ´Ã¦ngx_shm_zone_tÃ–ÄÂµÃ„addr+sizeÃÂ²Â²Â¿ÂµÃ˜Ã–Â·
 } ngx_slab_pool_t;
 
-//Í¼ĞÎ»¯Àí½â²Î¿¼:http://blog.csdn.net/u013009575/article/details/17743261
+//ÃÂ¼ÄÃÂ»Â¯Ã€Ã­Â½Ã¢Â²ÃÂ¿Â¼:http://blog.csdn.net/u013009575/article/details/17743261
 void ngx_slab_init(ngx_slab_pool_t *pool);
 void *ngx_slab_alloc(ngx_slab_pool_t *pool, size_t size);
 void *ngx_slab_alloc_locked(ngx_slab_pool_t *pool, size_t size);

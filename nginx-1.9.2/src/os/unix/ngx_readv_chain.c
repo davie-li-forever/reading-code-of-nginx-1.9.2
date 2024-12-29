@@ -12,14 +12,14 @@
 
 ssize_t
 ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
-{//Õâ¸öº¯ÊıÓÃreadv½«½«Á¬½ÓµÄÊı¾İ¶ÁÈ¡·Åµ½chainµÄÁ´±íÀïÃæ£¬Èç¹ûÓĞ´í±ê¼Çerror»òÕßeof¡£
-//·µ»Ø¶ÁÈ¡µ½µÄ×Ö½ÚÊı¡
+{//Ã•Ã¢Â¸Ã¶ÂºÂ¯ÃŠÄ±Ã“ÃƒreadvÂ½Â«Â½Â«ÃÂ¬Â½Ã“ÂµÃ„ÃŠÄ±Â¾Ä°Â¶ÃÃˆÂ¡Â·Ã…ÂµÂ½chainÂµÃ„ÃÂ´Â±Ã­Ã€Ã¯ÃƒÃ¦Â£Â¬ÃˆÃ§Â¹Ã»Ã“ÄÂ´Ã­Â±ÃªÂ¼Ã‡errorÂ»Ã²Ã•ÃŸeofÂ¡Â£
+//Â·ÂµÂ»Ã˜Â¶ÃÃˆÂ¡ÂµÂ½ÂµÃ„Ã—Ã–Â½ÃšÃŠÄ±Â¡
     u_char        *prev;
     ssize_t        n, size;
     ngx_err_t      err;
     ngx_array_t    vec;
     ngx_event_t   *rev;
-    struct iovec  *iov, iovs[NGX_IOVS_PREALLOCATE];//16¸ö¿é
+    struct iovec  *iov, iovs[NGX_IOVS_PREALLOCATE];//16Â¸Ã¶Â¿Ã©
 
     rev = c->read;
 
@@ -58,7 +58,7 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
     iov = NULL;
     size = 0;
 
-    vec.elts = iovs; //vecÊı×éÖĞ°üÀ¨NGX_IOVS_PREALLOCATE¸östruct iovec½á¹¹
+    vec.elts = iovs; //vecÃŠÄ±Ã—Ã©Ã–ÄÂ°Ã¼Ã€Â¨NGX_IOVS_PREALLOCATEÂ¸Ã¶struct iovecÂ½Ã¡Â¹Â¹
     vec.nelts = 0;
     vec.size = sizeof(struct iovec);
     vec.nalloc = NGX_IOVS_PREALLOCATE;
@@ -66,8 +66,8 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
 
     /* coalesce the neighbouring bufs */
 
-    while (chain) {//±éÀúchain»º³åÁ´±í£¬²»¶ÏµÄÉêÇëstruct iovec½á¹¹Îª´ı»áµÄreadv×ö×¼±¸£¬Åöµ½ÁÙ½ü2¿éÄÚ´æÈç¹ûÕıºÃ½ÓÔÚÒ»Æğ£¬¾Í¹«ÓÃÖ®¡£
-        n = chain->buf->end - chain->buf->last; //¸Ãchain->bufÖĞ¿ÉÒÔÊ¹ÓÃµÄÄÚ´æÓĞÕâÃ´¶à
+    while (chain) {//Â±Ã©Ã€ÃºchainÂ»ÂºÂ³Ã¥ÃÂ´Â±Ã­Â£Â¬Â²Â»Â¶ÃÂµÃ„Ã‰ÃªÃ‡Ã«struct iovecÂ½Ã¡Â¹Â¹ÃÂªÂ´Ä±Â»Ã¡ÂµÃ„readvÃ—Ã¶Ã—Â¼Â±Â¸Â£Â¬Ã…Ã¶ÂµÂ½ÃÃ™Â½Ã¼2Â¿Ã©Ã„ÃšÂ´Ã¦ÃˆÃ§Â¹Ã»Ã•Ä±ÂºÃƒÂ½Ã“Ã”ÃšÃ’Â»Ã†ÄŸÂ£Â¬Â¾ÃÂ¹Â«Ã“ÃƒÃ–Â®Â¡Â£
+        n = chain->buf->end - chain->buf->last; //Â¸Ãƒchain->bufÃ–ÄÂ¿Ã‰Ã’Ã”ÃŠÂ¹Ã“ÃƒÂµÃ„Ã„ÃšÂ´Ã¦Ã“ÄÃ•Ã¢ÃƒÂ´Â¶Ã 
 
         if (limit) {
             if (size >= limit) {
@@ -79,7 +79,7 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
             }
         }
 
-        if (prev == chain->buf->last) { //ËµÃ÷Ç°ÃæÒ»¸öchainµÄendºóºÍÃæÒ»¸öchainµÄlast¸ÕºÃÏàµÈ£¬Ò²¾ÍÊÇÕâÁ½¸öchainÄÚ´æÊÇÁ¬ĞøµÄ ÁÙ½ü2¿éÄÚ´æÈç¹ûÕıºÃ½ÓÔÚÒ»Æğ£¬¾Í¹«ÓÃÖ®¡£
+        if (prev == chain->buf->last) { //Ã‹ÂµÃƒÃ·Ã‡Â°ÃƒÃ¦Ã’Â»Â¸Ã¶chainÂµÃ„endÂºÃ³ÂºÃÃƒÃ¦Ã’Â»Â¸Ã¶chainÂµÃ„lastÂ¸Ã•ÂºÃƒÃÃ ÂµÃˆÂ£Â¬Ã’Â²Â¾ÃÃŠÃ‡Ã•Ã¢ÃÂ½Â¸Ã¶chainÃ„ÃšÂ´Ã¦ÃŠÃ‡ÃÂ¬ÄÃ¸ÂµÃ„ ÃÃ™Â½Ã¼2Â¿Ã©Ã„ÃšÂ´Ã¦ÃˆÃ§Â¹Ã»Ã•Ä±ÂºÃƒÂ½Ã“Ã”ÃšÃ’Â»Ã†ÄŸÂ£Â¬Â¾ÃÂ¹Â«Ã“ÃƒÃ–Â®Â¡Â£
             iov->iov_len += n;
 
         } else {
@@ -92,9 +92,9 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
                 return NGX_ERROR;
             }
 
-            //Ö¸ÏòÕâ¿éÄÚ´æÆğÊ¼Î»ÖÃ£¬ÆäÊµÖ®Ç°¿ÉÄÜ»¹ÓĞÊı¾İ£¬×¢ÒâÕâ²»ÊÇÄÚ´æ¿éµÄ¿ªÊ¼£¬¶øÊÇÊı¾İµÄÄ©Î²¡£ÓĞÊı¾İÊÇÒòÎªÉÏ´ÎÃ»ÓĞÌîÂúÒ»¿éÄÚ´æ¿éµÄÊı¾İ¡£
+            //Ã–Â¸ÃÃ²Ã•Ã¢Â¿Ã©Ã„ÃšÂ´Ã¦Ã†ÄŸÃŠÂ¼ÃÂ»Ã–ÃƒÂ£Â¬Ã†Ã¤ÃŠÂµÃ–Â®Ã‡Â°Â¿Ã‰Ã„ÃœÂ»Â¹Ã“ÄÃŠÄ±Â¾Ä°Â£Â¬Ã—Â¢Ã’Ã¢Ã•Ã¢Â²Â»ÃŠÃ‡Ã„ÃšÂ´Ã¦Â¿Ã©ÂµÃ„Â¿ÂªÃŠÂ¼Â£Â¬Â¶Ã¸ÃŠÃ‡ÃŠÄ±Â¾Ä°ÂµÃ„Ã„Â©ÃÂ²Â¡Â£Ã“ÄÃŠÄ±Â¾Ä°ÃŠÃ‡Ã’Ã²ÃÂªÃ‰ÃÂ´ÃÃƒÂ»Ã“ÄÃŒÃ®Ã‚ÃºÃ’Â»Â¿Ã©Ã„ÃšÂ´Ã¦Â¿Ã©ÂµÃ„ÃŠÄ±Â¾Ä°Â¡Â£
             iov->iov_base = (void *) chain->buf->last;
-            iov->iov_len = n;//¸³ÖµÕâ¿éÄÚ´æµÄ×î´ó´óĞ¡¡£
+            iov->iov_len = n;//Â¸Â³Ã–ÂµÃ•Ã¢Â¿Ã©Ã„ÃšÂ´Ã¦ÂµÃ„Ã—Ã®Â´Ã³Â´Ã³ÄÂ¡Â¡Â£
         }
 
         size += n;
@@ -106,12 +106,12 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
                    "readv: %d, last(iov_len):%d", vec.nelts, iov->iov_len);
 
     do {
-        //readÏµÁĞº¯Êı·µ»Ø0±íÊ¾¶Ô¶Ë·¢ËÍÁËFIN°ü
+        //readÃÂµÃÄÂºÂ¯ÃŠÄ±Â·ÂµÂ»Ã˜0Â±Ã­ÃŠÂ¾Â¶Ã”Â¶Ã‹Â·Â¢Ã‹ÃÃÃ‹FINÂ°Ã¼
 		//If any portion of a regular file prior to the end-of-file has not been written, read() shall return bytes with value 0.
-		//Èç¹ûÊÇÃ»ÓĞÊı¾İ¿É¶ÁÁË£¬»á·µ»Ø-1£¬È»ºóerrnoÎªEAGAIN±íÊ¾ÔİÊ±Ã»ÓĞÊı¾İ¡£
-		//´ÓÉÏÃæ¿ÉÒÔ¿´³öreadv¿ÉÒÔ½«¶Ô¶ËµÄÊı¾İ¶ÁÈëµ½±¾¶ËµÄ¼¸¸ö²»Á¬ĞøµÄÄÚ´æÖĞ£¬¶øreadÔòÖ»ÄÜ¶ÁÈëµ½Á¬ĞøµÄÄÚ´æÖĞ
+		//ÃˆÃ§Â¹Ã»ÃŠÃ‡ÃƒÂ»Ã“ÄÃŠÄ±Â¾Ä°Â¿Ã‰Â¶ÃÃÃ‹Â£Â¬Â»Ã¡Â·ÂµÂ»Ã˜-1Â£Â¬ÃˆÂ»ÂºÃ³errnoÃÂªEAGAINÂ±Ã­ÃŠÂ¾Ã”Ä°ÃŠÂ±ÃƒÂ»Ã“ÄÃŠÄ±Â¾Ä°Â¡Â£
+		//Â´Ã“Ã‰ÃÃƒÃ¦Â¿Ã‰Ã’Ã”Â¿Â´Â³Ã¶readvÂ¿Ã‰Ã’Ã”Â½Â«Â¶Ã”Â¶Ã‹ÂµÃ„ÃŠÄ±Â¾Ä°Â¶ÃÃˆÃ«ÂµÂ½Â±Â¾Â¶Ã‹ÂµÃ„Â¼Â¸Â¸Ã¶Â²Â»ÃÂ¬ÄÃ¸ÂµÃ„Ã„ÃšÂ´Ã¦Ã–ÄÂ£Â¬Â¶Ã¸readÃ”Ã²Ã–Â»Ã„ÃœÂ¶ÃÃˆÃ«ÂµÂ½ÃÂ¬ÄÃ¸ÂµÃ„Ã„ÃšÂ´Ã¦Ã–Ä
         /* On success, the readv() function returns the number of bytes read; the writev() function returns the number of bytes written.  
-        On error, -1 is returned, and errno is  set appropriately. readv·µ»Ø±»¶ÁµÄ×Ö½Ú×ÜÊı¡£Èç¹ûÃ»ÓĞ¸ü¶àÊı¾İºÍÅöµ½ÎÄ¼şÄ©Î²Ê±·µ»Ø0µÄ¼ÆÊı¡£ */
+        On error, -1 is returned, and errno is  set appropriately. readvÂ·ÂµÂ»Ã˜Â±Â»Â¶ÃÂµÃ„Ã—Ã–Â½ÃšÃ—ÃœÃŠÄ±Â¡Â£ÃˆÃ§Â¹Ã»ÃƒÂ»Ã“ÄÂ¸Ã¼Â¶Ã ÃŠÄ±Â¾Ä°ÂºÃÃ…Ã¶ÂµÂ½ÃÃ„Â¼ÅŸÃ„Â©ÃÂ²ÃŠÂ±Â·ÂµÂ»Ã˜0ÂµÃ„Â¼Ã†ÃŠÄ±Â¡Â£ */
         n = readv(c->fd, (struct iovec *) vec.elts, vec.nelts);
 
         if (n >= 0) {
@@ -136,7 +136,7 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
                     }
                 }
 
-                if (n == 0) {//readv·µ»Ø0±íÊ¾¶Ô¶ËÒÑ¾­¹Ø±ÕÁ¬½Ó£¬Ã»ÓĞÊı¾İÁË¡£
+                if (n == 0) {//readvÂ·ÂµÂ»Ã˜0Â±Ã­ÃŠÂ¾Â¶Ã”Â¶Ã‹Ã’Ã‘Â¾Â­Â¹Ã˜Â±Ã•ÃÂ¬Â½Ã“Â£Â¬ÃƒÂ»Ã“ÄÃŠÄ±Â¾Ä°ÃÃ‹Â¡Â£
 
                     /*
                      * on FreeBSD recv() may return 0 on closed socket
@@ -160,22 +160,22 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
 #endif /* NGX_HAVE_KQUEUE */
 
             if (n < size && !(ngx_event_flags & NGX_USE_GREEDY_EVENT)) {
-                rev->ready = 0; //ËµÃ÷¶Ô¶Ë·¢ËÍ¹ıÀ´´æ´¢ÔÚ±¾¶ËÄÚºË»º³åÇøµÄÊı¾İÒÑ¾­¶ÁÍê£¬  epoll²»Âú×ãÕâ¸öifÌõ¼ş
+                rev->ready = 0; //Ã‹ÂµÃƒÃ·Â¶Ã”Â¶Ã‹Â·Â¢Ã‹ÃÂ¹Ä±Ã€Â´Â´Ã¦Â´Â¢Ã”ÃšÂ±Â¾Â¶Ã‹Ã„ÃšÂºÃ‹Â»ÂºÂ³Ã¥Ã‡Ã¸ÂµÃ„ÃŠÄ±Â¾Ä°Ã’Ã‘Â¾Â­Â¶ÃÃÃªÂ£Â¬  epollÂ²Â»Ã‚ÃºÃ—Ã£Ã•Ã¢Â¸Ã¶ifÃŒÃµÂ¼ÅŸ
             }
 
-            if (n == 0) {//°´ÕÕreadv·µ»ØÖµ£¬Õâ¸öÓ¦¸Ã²»ÊÇ´íÎó£¬Ö»ÊÇ±íÊ¾Ã»Êı¾İÁË readv·µ»Ø±»¶ÁµÄ×Ö½Ú×ÜÊı¡£Èç¹ûÃ»ÓĞ¸ü¶àÊı¾İºÍÅöµ½ÎÄ¼şÄ©Î²Ê±·µ»Ø0µÄ¼ÆÊı¡£
+            if (n == 0) {//Â°Â´Ã•Ã•readvÂ·ÂµÂ»Ã˜Ã–ÂµÂ£Â¬Ã•Ã¢Â¸Ã¶Ã“Â¦Â¸ÃƒÂ²Â»ÃŠÃ‡Â´Ã­ÃÃ³Â£Â¬Ã–Â»ÃŠÃ‡Â±Ã­ÃŠÂ¾ÃƒÂ»ÃŠÄ±Â¾Ä°ÃÃ‹ readvÂ·ÂµÂ»Ã˜Â±Â»Â¶ÃÂµÃ„Ã—Ã–Â½ÃšÃ—ÃœÃŠÄ±Â¡Â£ÃˆÃ§Â¹Ã»ÃƒÂ»Ã“ÄÂ¸Ã¼Â¶Ã ÃŠÄ±Â¾Ä°ÂºÃÃ…Ã¶ÂµÂ½ÃÃ„Â¼ÅŸÃ„Â©ÃÂ²ÃŠÂ±Â·ÂµÂ»Ã˜0ÂµÃ„Â¼Ã†ÃŠÄ±Â¡Â£
                 
-                rev->eof = 1; //¸Ãº¯ÊıµÄÍâ²ãº¯Êı·¢ÏÖÊÇ0£¬ÔòÈÏÎªÊı¾İ¶ÁÈ¡Íê±Ï
+                rev->eof = 1; //Â¸ÃƒÂºÂ¯ÃŠÄ±ÂµÃ„ÃÃ¢Â²Ã£ÂºÂ¯ÃŠÄ±Â·Â¢ÃÃ–ÃŠÃ‡0Â£Â¬Ã”Ã²ÃˆÃÃÂªÃŠÄ±Â¾Ä°Â¶ÃÃˆÂ¡ÃÃªÂ±Ã
             }
 
-            return n; //¶ÔÓÚepollÀ´Ëµ£¬»¹ÊÇ¿É¶ÁµÄ£¬Ò²¾ÍÊÇreadvÎª1
+            return n; //Â¶Ã”Ã“ÃšepollÃ€Â´Ã‹ÂµÂ£Â¬Â»Â¹ÃŠÃ‡Â¿Ã‰Â¶ÃÂµÃ„Â£Â¬Ã’Â²Â¾ÃÃŠÃ‡readvÃÂª1
         }
 
-        //ËµÃ÷n<0   On error, -1 is returned, and errno is  set appropriately
+        //Ã‹ÂµÃƒÃ·n<0   On error, -1 is returned, and errno is  set appropriately
     
         err = ngx_socket_errno;
 
-        //readv·µ»Ø-1£¬Èç¹û²»ÊÇEAGAIN¾ÍÓĞÎÊÌâ¡£ ÀıÈçÄÚºË»º³åÇøÖĞÃ»ÓĞÊı¾İ£¬ÄãÒ²È¥readv£¬Ôò»á·µ»ØNGX_EAGAIN
+        //readvÂ·ÂµÂ»Ã˜-1Â£Â¬ÃˆÃ§Â¹Ã»Â²Â»ÃŠÃ‡EAGAINÂ¾ÃÃ“ÄÃÃŠÃŒÃ¢Â¡Â£ Ã€Ä±ÃˆÃ§Ã„ÃšÂºÃ‹Â»ÂºÂ³Ã¥Ã‡Ã¸Ã–ÄÃƒÂ»Ã“ÄÃŠÄ±Â¾Ä°Â£Â¬Ã„Ã£Ã’Â²ÃˆÂ¥readvÂ£Â¬Ã”Ã²Â»Ã¡Â·ÂµÂ»Ã˜NGX_EAGAIN
         if (err == NGX_EAGAIN || err == NGX_EINTR) {
             ngx_log_debug0(NGX_LOG_DEBUG_EVENT, c->log, err,
                            "readv() not ready");
@@ -188,10 +188,10 @@ ngx_readv_chain(ngx_connection_t *c, ngx_chain_t *chain, off_t limit)
 
     } while (err == NGX_EINTR);
 
-    rev->ready = 0;//²»¿É¶ÁÁË¡£
+    rev->ready = 0;//Â²Â»Â¿Ã‰Â¶ÃÃÃ‹Â¡Â£
 
     if (n == NGX_ERROR) {
-        c->read->error = 1;//Á¬½ÓÓĞ´íÎó·¢Éú¡£
+        c->read->error = 1;//ÃÂ¬Â½Ã“Ã“ÄÂ´Ã­ÃÃ³Â·Â¢Ã‰ÃºÂ¡Â£
     }
 
     return n;
